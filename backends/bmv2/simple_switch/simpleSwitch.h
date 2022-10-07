@@ -183,6 +183,8 @@ EXTERN_CONVERTER_W_OBJECT_AND_INSTANCE(direct_counter)
 EXTERN_CONVERTER_W_OBJECT_AND_INSTANCE_AND_MODEL(direct_meter, P4V1::V1Model, v1model)
 EXTERN_CONVERTER_W_INSTANCE_AND_MODEL(action_profile, P4V1::V1Model, v1model)
 EXTERN_CONVERTER_W_INSTANCE_AND_MODEL(action_selector, P4V1::V1Model, v1model)
+EXTERN_CONVERTER_W_FUNCTION(add_entry_if)
+EXTERN_CONVERTER_W_FUNCTION(set_entry_expire_time_if)
 
 }  // namespace BMV2
 

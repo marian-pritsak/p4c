@@ -114,6 +114,8 @@ ExternConverter_direct_meter ExternConverter_direct_meter::singleton;
 ExternConverter_action_profile ExternConverter_action_profile::singleton;
 ExternConverter_action_selector ExternConverter_action_selector::singleton;
 ExternConverter_log_msg ExternConverter_log_msg::singleton;
+ExternConverter_add_entry_if ExternConverter_add_entry_if::singleton;
+ExternConverter_set_entry_expire_time_if ExternConverter_set_entry_expire_time_if::singleton;
 
 Util::IJson* ExternConverter_clone::convertExternFunction(
     ConversionContext* ctxt, UNUSED const P4::ExternFunction* ef,
@@ -395,6 +397,53 @@ Util::IJson* ExternConverter_mark_to_drop::convertExternFunction(
     auto params = mkParameters(primitive);
     auto dest = ctxt->conv->convert(mc->arguments->at(0)->expression);
     params->append(dest);
+    primitive->emplace_non_null("source_info", s->sourceInfoJsonObj());
+    return primitive;
+}
+
+Util::IJson* ExternConverter_add_entry_if::convertExternFunction(
+    ConversionContext* ctxt, UNUSED const P4::ExternFunction* ef,
+    const IR::MethodCallExpression* mc, UNUSED const IR::StatOrDecl* s,
+    UNUSED const bool emitExterns) {
+    if (mc->arguments->size() != 5) {
+        modelError("Expected 5 argument for %1%", mc);
+        return nullptr;
+    }
+    auto primitive = mkPrimitive("add_entry_if");
+    auto params = mkParameters(primitive);
+    auto flag = ctxt->conv->convert(mc->arguments->at(0)->expression);
+    auto val = ctxt->conv->convert(mc->arguments->at(1)->expression);
+    auto tab = ctxt->conv->convert(mc->arguments->at(2)->expression);
+    auto action = ctxt->conv->convert(mc->arguments->at(3)->expression);
+    auto action_arg = ctxt->conv->convert(mc->arguments->at(4)->expression);
+    params->append(flag);
+    params->append(val);
+    params->append(tab);
+    params->append(action);
+    params->append(action_arg);
+    primitive->emplace_non_null("source_info", s->sourceInfoJsonObj());
+    return primitive;
+}
+
+Util::IJson* ExternConverter_set_entry_expire_time_if::convertExternFunction(
+    ConversionContext* ctxt, UNUSED const P4::ExternFunction* ef,
+    const IR::MethodCallExpression* mc, UNUSED const IR::StatOrDecl* s,
+    UNUSED const bool emitExterns) {
+    if (mc->arguments->size() != 4) {
+        modelError("Expected 4 argument for %1%", mc);
+        return nullptr;
+    }
+    auto primitive = mkPrimitive("set_entry_expire_time_if");
+    auto params = mkParameters(primitive);
+    auto flag = ctxt->conv->convert(mc->arguments->at(0)->expression);
+    auto val = ctxt->conv->convert(mc->arguments->at(1)->expression);
+    auto tab = ctxt->conv->convert(mc->arguments->at(2)->expression);
+    auto ttl = ctxt->conv->convert(mc->arguments->at(3)->expression);
+
+    params->append(flag);
+    params->append(val);
+    params->append(tab);
+    params->append(ttl);
     primitive->emplace_non_null("source_info", s->sourceInfoJsonObj());
     return primitive;
 }

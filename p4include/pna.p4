@@ -601,6 +601,9 @@ extern bool add_entry<T>(string action_name,
                          in T action_params,
                          in ExpireTimeProfileId_t expire_time_profile_id);
 
+extern void add_entry_if<T, D>(in T flag, in T value, string action_table,
+                               string action_name, in D data);
+
 extern FlowId_t allocate_flow_id();
 
 
@@ -615,6 +618,8 @@ extern FlowId_t allocate_flow_id();
 extern void set_entry_expire_time(
     in ExpireTimeProfileId_t expire_time_profile_id);
 
+extern void set_entry_expire_time_if<T, D>(in T flag, in T value, string action_table,
+    in D data);
 
 // restart_expire_timer() may only be called from within an action of
 // a table with property 'idle_timeout' or
